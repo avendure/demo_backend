@@ -16,7 +16,7 @@ const LOCAL_CERT_PATH = "ca-certificate.crt";
 
 export const config: VendureConfig = {
 	apiOptions: {
-		port: 3000,
+		port: 3001,
 		adminApiPath: "admin-api",
 		shopApiPath: "shop-api",
 		// The following options are useful in development mode,
@@ -53,18 +53,18 @@ export const config: VendureConfig = {
 		synchronize: false,
 		migrations: [path.join(__dirname, "./migrations/*.+(js|ts)")],
 		logging: false,
-		database: process.env.DB_NAME,
+		database: IS_DEV ? "marketplace" : process.env.DB_NAME,
 		schema: process.env.DB_SCHEMA,
-		host: process.env.DB_HOST,
-		port: +process.env.DB_PORT,
-		username: process.env.DB_USERNAME,
-		password: process.env.DB_PASSWORD,
-		// ssl: {
-		// 	rejectUnauthorized: false,
-		// 	ca: IS_DEV
-		// 		? fs.readFileSync(LOCAL_CERT_PATH).toString()
-		// 		: process.env.CERT_PATH,
-		// },
+		host: IS_DEV ? "localhost" : process.env.DB_HOST,
+		port: IS_DEV ? 5432 : +process.env.DB_PORT,
+		username: IS_DEV ? "postgres" : process.env.DB_USERNAME,
+		password: IS_DEV ? "postgres" : process.env.DB_PASSWORD,
+		ssl: {
+			rejectUnauthorized: false,
+			ca: IS_DEV
+				? fs.readFileSync(LOCAL_CERT_PATH).toString()
+				: process.env.CERT_PATH,
+		},
 	},
 	paymentOptions: {
 		paymentMethodHandlers: [dummyPaymentHandler],
