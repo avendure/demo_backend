@@ -50,7 +50,7 @@ export const config: VendureConfig = {
 		type: "postgres",
 		// See the README.md "Migrations" section for an explanation of
 		// the `synchronize` and `migrations` options.
-		synchronize: false,
+		synchronize: true,
 		migrations: [path.join(__dirname, "./migrations/*.+(js|ts)")],
 		logging: false,
 		database: IS_DEV ? "marketplace" : process.env.DB_NAME,
