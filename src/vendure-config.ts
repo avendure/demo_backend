@@ -85,7 +85,7 @@ export const config: VendureConfig = {
 			assetUrlPrefix:
 				"https://avendure-space.nyc3.cdn.digitaloceanspaces.com/assets/",
 			storageStrategyFactory: configureS3AssetStorage({
-				bucket: "avendure-assets",
+				bucket: "avendure-space",
 				credentials: {
 					accessKeyId: process.env.DO_SPACE_ID,
 					secretAccessKey: process.env.DO_SPACE_SECRET_KEY,
