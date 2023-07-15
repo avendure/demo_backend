@@ -5,7 +5,10 @@ import {
 	VendureConfig,
 } from "@vendure/core";
 import { defaultEmailHandlers, EmailPlugin } from "@vendure/email-plugin";
-import { AssetServerPlugin } from "@vendure/asset-server-plugin";
+import {
+	AssetServerPlugin,
+	configureS3AssetStorage,
+} from "@vendure/asset-server-plugin";
 import { AdminUiPlugin } from "@vendure/admin-ui-plugin";
 import "dotenv/config";
 import path from "path";
@@ -79,7 +82,24 @@ export const config: VendureConfig = {
 			// For local dev, the correct value for assetUrlPrefix should
 			// be guessed correctly, but for production it will usually need
 			// to be set manually to match your production url.
-			assetUrlPrefix: IS_DEV ? undefined : "https://www.my-shop.com/assets",
+			assetUrlPrefix:
+				"https://avendure-space.nyc3.cdn.digitaloceanspaces.com/assets/",
+			storageStrategyFactory: configureS3AssetStorage({
+				bucket: "avendure-assets",
+				credentials: {
+					accessKeyId: process.env.DO_SPACE_ID,
+					secretAccessKey: process.env.DO_SPACE_SECRET_KEY,
+				},
+				nativeS3Configuration: {
+					endpoint: process.env.DO_SPACE_ENDPOINT,
+					signatureVersion: "v4",
+					forcePathStyle: false,
+					region: "us-west-1",
+				},
+				nativeS3UploadConfiguration: {
+					ACL: "public-read",
+				},
+			}),
 		}),
 		DefaultJobQueuePlugin.init({ useDatabaseForBuffer: true }),
 		DefaultSearchPlugin.init({ bufferUpdates: false, indexStockStatus: true }),

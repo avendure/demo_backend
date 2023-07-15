@@ -16,6 +16,9 @@ declare global {
 			DB_USERNAME: string;
 			DB_PASSWORD: string;
 			DB_SCHEMA: string;
+			DO_SPACE_ID: string;
+			DO_SPACE_SECRET_KEY: string;
+			DO_SPACE_ENDPOINT: string;
 			CERT_PATH: string;
 		}
 	}
