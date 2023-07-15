@@ -15,6 +15,8 @@
     "migration:revert": "ts-node migration revert"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.370.0",
+    "@aws-sdk/lib-storage": "^3.370.0",
     "@vendure/admin-ui-plugin": "2.0.3",
     "@vendure/asset-server-plugin": "2.0.3",
     "@vendure/core": "2.0.3",
