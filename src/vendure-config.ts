@@ -83,7 +83,7 @@ export const config: VendureConfig = {
 			// be guessed correctly, but for production it will usually need
 			// to be set manually to match your production url.
 			assetUrlPrefix:
-				"https://avendure-space.nyc3.cdn.digitaloceanspaces.com/assets/",
+				"https://avendure-space.nyc3.digitaloceanspaces.com/assets/",
 			storageStrategyFactory: configureS3AssetStorage({
 				bucket: "avendure-space",
 				credentials: {
