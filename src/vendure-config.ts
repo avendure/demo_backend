@@ -13,6 +13,7 @@ import { AdminUiPlugin } from "@vendure/admin-ui-plugin";
 import "dotenv/config";
 import path from "path";
 import fs from "fs";
+import { MultivendorPlugin } from "./plugins/multivendor-plugin/multivendor.plugin";
 
 const IS_DEV = process.env.APP_ENV === "dev";
 const LOCAL_CERT_PATH = "ca-certificate.crt";
@@ -62,12 +63,12 @@ export const config: VendureConfig = {
 		port: IS_DEV ? 5432 : +process.env.DB_PORT,
 		username: IS_DEV ? "postgres" : process.env.DB_USERNAME,
 		password: IS_DEV ? "postgres" : process.env.DB_PASSWORD,
-		ssl: {
-			rejectUnauthorized: false,
-			ca: IS_DEV
-				? fs.readFileSync(LOCAL_CERT_PATH).toString()
-				: process.env.CERT_PATH,
-		},
+		// ssl: {
+		// 	rejectUnauthorized: false,
+		// 	ca: IS_DEV
+		// 		? fs.readFileSync(LOCAL_CERT_PATH).toString()
+		// 		: process.env.CERT_PATH,
+		// },
 	},
 	paymentOptions: {
 		paymentMethodHandlers: [dummyPaymentHandler],
@@ -76,30 +77,33 @@ export const config: VendureConfig = {
 	// need to be updated. See the "Migrations" section in README.md.
 	customFields: {},
 	plugins: [
+		MultivendorPlugin.init({
+			platformFeePercent: 10,
+			platformFeeSKU: "FEE",
+		}),
 		AssetServerPlugin.init({
 			route: "assets",
 			assetUploadDir: path.join(__dirname, "../static/assets"),
 			// For local dev, the correct value for assetUrlPrefix should
 			// be guessed correctly, but for production it will usually need
 			// to be set manually to match your production url.
-			assetUrlPrefix:
-				"https://avendure-space.nyc3.digitaloceanspaces.com/assets/",
-			storageStrategyFactory: configureS3AssetStorage({
-				bucket: "avendure-space",
-				credentials: {
-					accessKeyId: process.env.DO_SPACE_ID,
-					secretAccessKey: process.env.DO_SPACE_SECRET_KEY,
-				},
-				nativeS3Configuration: {
-					endpoint: process.env.DO_SPACE_ENDPOINT,
-					signatureVersion: "v4",
-					forcePathStyle: false,
-					region: "us-west-1",
-				},
-				nativeS3UploadConfiguration: {
-					ACL: "public-read",
-				},
-			}),
+			assetUrlPrefix: "https://localhost/assets/",
+			// storageStrategyFactory: configureS3AssetStorage({
+			// 	bucket: "avendure-space",
+			// 	credentials: {
+			// 		accessKeyId: process.env.DO_SPACE_ID,
+			// 		secretAccessKey: process.env.DO_SPACE_SECRET_KEY,
+			// 	},
+			// 	nativeS3Configuration: {
+			// 		endpoint: process.env.DO_SPACE_ENDPOINT,
+			// 		signatureVersion: "v4",
+			// 		forcePathStyle: false,
+			// 		region: "us-west-1",
+			// 	},
+			// 	nativeS3UploadConfiguration: {
+			// 		ACL: "public-read",
+			// 	},
+			// }),
 		}),
 		DefaultJobQueuePlugin.init({ useDatabaseForBuffer: true }),
 		DefaultSearchPlugin.init({ bufferUpdates: false, indexStockStatus: true }),
@@ -122,6 +126,9 @@ export const config: VendureConfig = {
 		AdminUiPlugin.init({
 			route: "admin",
 			port: 3002,
+			app: {
+				path: path.join(__dirname, "/admin-ui/dist"),
+			},
 		}),
 	],
 };
