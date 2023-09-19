@@ -127,7 +127,7 @@ export const config: VendureConfig = {
 			route: "admin",
 			port: 3002,
 			app: {
-				path: path.join(__dirname, "/admin-ui/dist"),
+				path: path.join(__dirname, "/admin-ui/src"),
 			},
 		}),
 	],
